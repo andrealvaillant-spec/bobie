@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bobie
 
-## Getting Started
+**Un monteur vidéo qu'on embauche, pas un logiciel de plus.**
 
-First, run the development server:
+Bobie apprend un style de montage à partir de vrais montages, monte des rushs, et
+se corrige avec les retours. Il rend un MP4 et un projet Premiere (XML).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Ce dépôt est public : le produit se construit en public. Les recettes de style
+(règles chiffrées, prompts, corpus) vivent dans un dépôt privé — c'est le
+savoir-faire, pas l'outil.
+
+## Le principe
+
+La **timeline JSON** est la source de vérité ([`src/lib/timeline.ts`](src/lib/timeline.ts)).
+L'agent ne pilote pas Premiere : il produit une timeline, et tout le reste n'en
+est qu'une traduction.
+
+```
+Rushs ─► Transcription ─► L'agent décide ─► TIMELINE (JSON)
+                                               │
+              ┌────────────────────────────────┼────────────────────────────┐
+              ▼                                ▼                            ▼
+      Rendu → MP4                  Aperçu web + corrections        Export Premiere (XML)
+                                     (notes, retours)                  pour les pros
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Les corrections faites dans l'aperçu repartent dans l'apprentissage. C'est la
+boucle qui fait la différence : Bobie ne repart pas de zéro à chaque vidéo.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Deux notions à ne pas confondre :
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Format** = la structure (short, long, podcast, VSL) — *qu'est-ce qu'on garde
+  et dans quel ordre ?*
+- **Style** = l'habillage et le rythme (Lucidus, TEH rouge, Marcus violet) —
+  *à quoi ça ressemble ?*
 
-## Learn More
+N'importe quel style s'applique à n'importe quel format.
 
-To learn more about Next.js, take a look at the following resources:
+## La pile
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Brique | Choix |
+| --- | --- |
+| Web app | Next.js 16 (App Router) + Tailwind 4 |
+| Base, auth, stockage | Supabase (Postgres + RLS + Storage) |
+| Décisions de montage | API Claude |
+| Transcription | Whisper local (`mlx-whisper large-v3-turbo`) |
+| Rendu | Remotion (à brancher) |
+| Hébergement | Vercel |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Le traitement lourd ne tourne pas sur Vercel : un **worker** prend les jobs dans
+la file (`jobs`) et les traite — d'abord sur la machine de dev, plus tard sur un
+GPU loué.
 
-## Deploy on Vercel
+## Démarrer
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm install
+cp .env.example .env.local   # puis remplir les clés Supabase
+npm run migrate              # applique supabase/migrations/*.sql
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Schéma
+
+`workspaces` → `projects` → `media` (les rushs) → `jobs` (la file) →
+`timelines` (le montage) → `deliverables` (MP4/XML) + `reviews` (la note
+humaine, la donnée la plus précieuse du projet).
+
+## État
+
+Voir [ROADMAP.md](ROADMAP.md).

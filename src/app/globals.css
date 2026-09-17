@@ -1,26 +1,157 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Bobie — jetons de design
+   Repris du prototype validé le 17/09/2026 (rush-app/index.html).
+   Règles : carrés légèrement arrondis (8px, 5-6px pour les petites étiquettes),
+   accent en dégradé bleu clair, jamais de pilule.
+--------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --bg: #ffffff;
+  --bg-soft: #f7f6f8;
+  --surface: #ffffff;
+  --surface-2: #f4f3f6;
+  --line: #ecebef;
+  --line-strong: #dddae2;
+  --text: #121114;
+  --text-2: #5b5862;
+  --text-3: #75727b;
+  --accent: #0284c7;
+  --accent-strong: #0369a1;
+  --accent-soft: #e0f2fe;
+  --accent-line: #bae6fd;
+  --ink: #121114;
+  --on-ink: #ffffff;
+  --ok: #17804a;
+  --ok-bg: #e5f5ec;
+  --warn: #9a5b00;
+  --warn-bg: #fdf0da;
+  --info: #5b3fd6;
+  --info-bg: #eeeafe;
+  --grad: linear-gradient(100deg, #bae6fd 0%, #7dd3fc 38%, #38bdf8 70%, #60a5fa 100%);
+  --on-grad: #0b2f4a;
+  --shadow: 0 1px 2px rgba(18, 17, 20, 0.04), 0 8px 24px -12px rgba(18, 17, 20, 0.12);
+  --rail: #f1f0f3;
+  --tip: #121114;
+  --on-tip: #ffffff;
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 18px;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #1b1b1d;
+    --bg-soft: #212123;
+    --surface: #252527;
+    --surface-2: #2c2c2f;
+    --line: #333336;
+    --line-strong: #424246;
+    --text: #f4f3f5;
+    --text-2: #b6b3bb;
+    --text-3: #95929a;
+    --accent: #7dd3fc;
+    --accent-strong: #bae6fd;
+    --accent-soft: #12304a;
+    --accent-line: #1e4a6e;
+    --ink: #f4f3f5;
+    --on-ink: #141315;
+    --ok: #5fd394;
+    --ok-bg: #1d3527;
+    --warn: #f1b45a;
+    --warn-bg: #3a2d17;
+    --info: #a996ff;
+    --info-bg: #2a2542;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+    --rail: #252527;
+    --tip: #f4f3f5;
+    --on-tip: #141315;
   }
 }
 
+:root[data-theme="dark"] {
+  --bg: #1b1b1d;
+  --bg-soft: #212123;
+  --surface: #252527;
+  --surface-2: #2c2c2f;
+  --line: #333336;
+  --line-strong: #424246;
+  --text: #f4f3f5;
+  --text-2: #b6b3bb;
+  --text-3: #95929a;
+  --accent: #7dd3fc;
+  --accent-strong: #bae6fd;
+  --accent-soft: #12304a;
+  --accent-line: #1e4a6e;
+  --ink: #f4f3f5;
+  --on-ink: #141315;
+  --ok: #5fd394;
+  --ok-bg: #1d3527;
+  --warn: #f1b45a;
+  --warn-bg: #3a2d17;
+  --info: #a996ff;
+  --info-bg: #2a2542;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  --rail: #252527;
+  --tip: #f4f3f5;
+  --on-tip: #141315;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-soft: var(--bg-soft);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+  --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
+  --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-rail: var(--rail);
+  --radius-sm: var(--r-sm);
+  --radius-DEFAULT: var(--r);
+  --radius-lg: var(--r-lg);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  transition: background 0.25s, color 0.25s;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
 }

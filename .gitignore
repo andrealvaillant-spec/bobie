@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Recettes de style (dépôt privé, monté ici)
+/style
+
+# Env
+.env.local
+.env*.local
