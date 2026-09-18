@@ -149,21 +149,12 @@ const STEPS: Record<string, (db: Admin, job: Job) => Promise<void>> = {
 // ---------------------------------------------------------------- boucle ---
 
 async function tick(db: Admin): Promise<boolean> {
-  const { data, error } = await db.rpc("claim_job", { worker: WORKER_ID });
+  // Sans clé API, l'étape de décision reste dans la file sans bloquer les autres.
+  const kinds = Object.keys(STEPS).filter((k) => k !== "edit" || process.env.ANTHROPIC_API_KEY);
+  const { data, error } = await db.rpc("claim_job", { worker: WORKER_ID, kinds });
   if (error) throw error;
   const job = (data as Job[])[0];
   if (!job) return false;
-
-  // Sans clé API, l'étape de décision attend dans la file au lieu d'échouer.
-  if (job.kind === "edit" && !process.env.ANTHROPIC_API_KEY) {
-    await db.from("jobs").update({
-      status: "queued",
-      attempts: job.attempts - 1,
-      worker_id: null,
-      message: "En attente de la clé API Claude",
-    }).eq("id", job.id);
-    return false;
-  }
 
   const step = STEPS[job.kind];
   try {
