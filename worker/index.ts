@@ -154,6 +154,17 @@ async function tick(db: Admin): Promise<boolean> {
   const job = (data as Job[])[0];
   if (!job) return false;
 
+  // Sans clé API, l'étape de décision attend dans la file au lieu d'échouer.
+  if (job.kind === "edit" && !process.env.ANTHROPIC_API_KEY) {
+    await db.from("jobs").update({
+      status: "queued",
+      attempts: job.attempts - 1,
+      worker_id: null,
+      message: "En attente de la clé API Claude",
+    }).eq("id", job.id);
+    return false;
+  }
+
   const step = STEPS[job.kind];
   try {
     if (!step) throw new Error(`Étape « ${job.kind} » pas encore branchée.`);
