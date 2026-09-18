@@ -20,10 +20,11 @@ Travaux dans `~/Desktop/agent-monteur` : 34 règles mesurées sur 516 shorts,
 - [x] Format de timeline JSON + mesures
 - [x] Schéma Supabase (espaces, projets, médias, file de jobs, timelines, notes) + RLS
 - [x] Page publique + liste d'attente
-- [ ] Connexion et espace de travail
-- [ ] Dépôt des rushs (Storage) et création d'un projet
+- [x] Connexion et espace de travail
+- [x] Dépôt des rushs (Storage) et création d'un projet
 - [ ] File de jobs visible, avec avancement
-- [ ] Worker local : sonde → transcription → décisions (API Claude) → timeline
+- [x] Worker local : sonde → transcription → décisions (API Claude) → timeline
+- [ ] Upload résumable des gros rushs (offre Pro Supabase)
 - [ ] Écran de validation : garder / jeter / ajuster les bornes / noter
 - [ ] Export MP4 (Remotion) **et** projet Premiere (XML)
 - [ ] Quotas par compte

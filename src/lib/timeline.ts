@@ -45,11 +45,7 @@ export const ClipSchema = z.object({
 });
 export type Clip = z.infer<typeof ClipSchema>;
 
-/**
- * Un carton de sous-titre.
- * Mesuré sur 516 shorts : 1-2 mots, 0,52 s, centré, y ≈ 0,56, cartons collés
- * voire chevauchants, et 1 carton sur 5 est un mot-clé agrandi (~220 %).
- */
+/** Un carton de sous-titre. Le rendu (taille, couleur, mot-clé) dépend du style. */
 export const CaptionSchema = z.object({
   id: z.string().min(1),
   text: z.string(),
@@ -64,9 +60,8 @@ export const CaptionSchema = z.object({
 export type Caption = z.infer<typeof CaptionSchema>;
 
 /**
- * Un zoom. Toujours posé sur un calque d'effets, pour que les sous-titres
- * zooment aussi. Deux presets mesurés : "punch" (100→131→106 sur 2,84 s) et
- * "push" (100→115).
+ * Un zoom, posé sur un calque d'effets pour que les sous-titres zooment aussi.
+ * Les courbes des presets sont définies par le style.
  */
 export const ZoomSchema = z.object({
   id: z.string().min(1),
@@ -130,8 +125,8 @@ export function clipDuration(clip: Clip): number {
 }
 
 /**
- * Mesures d'un montage, au même vocabulaire que le modèle de style
- * (~/Desktop/agent-monteur). Sert à noter un candidat sans l'ouvrir.
+ * Mesures d'un montage, au même vocabulaire que les profils de style.
+ * Sert à noter un candidat sans l'ouvrir.
  */
 export function measure(timeline: Timeline) {
   const durations = timeline.clips.map(clipDuration).sort((a, b) => a - b);

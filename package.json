@@ -7,15 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "migrate": "node scripts/migrate.mjs"
+    "migrate": "node scripts/migrate.mjs",
+    "worker": "tsx worker/index.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.126.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.116.0",
     "next": "16.3.5",
     "pg": "^8.23.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "yaml": "^2.9.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
@@ -26,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
+    "tsx": "^4.23.13",
     "typescript": "^5"
   }
 }

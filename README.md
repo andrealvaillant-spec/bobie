@@ -60,6 +60,25 @@ npm run migrate              # applique supabase/migrations/*.sql
 npm run dev
 ```
 
+## Le worker
+
+Le traitement lourd tourne sur une machine à part (aujourd'hui un Mac Apple
+Silicon) qui dépile la table `jobs` :
+
+```bash
+npm run worker            # en continu
+npm run worker -- --once  # un job puis s'arrête
+```
+
+Chaîne d'un projet : `probe` (ffmpeg lit durée, format, son) → `transcribe`
+(mlx-whisper, mot à mot, en local) → `edit` (l'API Claude choisit les passages
+et les mots-clés, puis `worker/assemble.ts` construit la timeline) → le projet
+passe « À valider ».
+
+Pré-requis : `ffmpeg`, `python3` avec `mlx-whisper`, et `ANTHROPIC_API_KEY`
+dans `.env.local`. Les recettes privées (`style/prompts`, `style/profils`) sont
+lues si le dépôt privé est monté, sinon le worker prend des valeurs par défaut.
+
 ## Schéma
 
 `workspaces` → `projects` → `media` (les rushs) → `jobs` (la file) →
