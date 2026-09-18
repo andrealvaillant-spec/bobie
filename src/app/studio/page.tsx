@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/SignOutButton";
 
@@ -27,6 +28,8 @@ export default async function Studio() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  await supabase.rpc("ensure_workspace");
+
   const { data, error } = await supabase
     .from("projects")
     .select("id, name, format, status, created_at")
@@ -54,13 +57,13 @@ export default async function Studio() {
             <p className="eyebrow">Studio</p>
             <h1 className="mt-2 text-2xl font-bold tracking-[-0.02em]">Tes projets</h1>
           </div>
-          <button
-            className="h-10 rounded-[8px] px-4 text-sm font-semibold"
+          <Link
+            href="/studio/nouveau"
+            className="flex h-10 items-center rounded-[8px] px-4 text-sm font-semibold"
             style={{ background: "var(--ink)", color: "var(--on-ink)" }}
-            disabled
           >
             Nouveau projet
-          </button>
+          </Link>
         </div>
 
         {error ? (
